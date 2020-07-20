@@ -1,0 +1,96 @@
+.TH octopuslb-admin "1" "29 Nov 2011" "version 1.14" "User Commands"
+
+.SH NAME
+
+octopuslb-admin - administration interface for the Octopus Load Balancer utility.
+
+.SH SYNOPSIS
+
+.B octopuslb-admin
+-h
+.br
+.B octopuslb-admin
+[-f shm_file] [-e "command"] [-r] [-i] [-m] 
+.br
+.B octopuslb-admin
+[-d shm_dir] [-e "command"] [-r] [-i] [-m] 
+
+.SH DESCRIPTION
+
+.B octopuslb-admin
+connects to a running instance of 
+.B octopuslb-server 
+for the purposes of configuration and reporting. An interactive shell is launched which presents a range of commands to the administrator. 
+
+Most features of 
+.B octopuslb-server
+can be dynamically controlled via
+.B octopuslb-admin
+such as; server addition/deletion/enabling/disabling/limiting and load balancing algorithm changes.  
+
+When 
+.B octopuslb-server
+starts it writes an empty file (known as the shm_file) to a user-definable location on the filesystem.
+.B octopuslb-admin 
+searches for available files in a default directory (known as the shm_dir) and then connects to the corresponding segment of shared-memory in order to perform adminstration tasks.
+
+If the user launching
+.B octopuslb-admin
+does not have write permission on the shm_file then the admin will be put into read-only mode which prevents any changes to the running server process.   
+
+.SH OPTIONS
+
+.TP 5
+.B -h
+prints out the list of available commands
+
+.TP
+.B -f SHM_FILE
+using this option forces
+.B octopuslb-admin
+to connect to the shared-memory segment used by the instance of
+.B octopuslb-server
+associated with the shm_file specified as a parameter to this option 
+
+.TP
+.B -d SHM_DIR
+using this option forces
+.B octopuslb-admin
+to scan the directory specifed for shm_files. The default directory used by both 
+.B octopuslb-server
+and
+.B octopuslb-admin
+is /var/run/octopus, so you only need to specify this if the server has been configured to place it's shm_file in a non-default directory
+
+.TP
+.B -e "COMMAND"
+when 
+.B octopuslb-admin
+starts it will execute this command and then exit. COMMAND can be any command that can be run from the octopus interactive shell. This effectively runs  
+.B octopuslb-admin
+in a non-interactive manner. The command should be encased in quotes. Useful for scripting control of the load balancer.
+
+.TP
+.B -i
+on startup,
+.B octopuslb-admin
+performs a version check to ensure that there is no version mismatch between server and administration admin. This option skips that check. There's no \
+real reason why you'd need to do this.
+
+.TP
+.B -r
+Read-only mode. This option will put
+.B octopuslb-admin
+into read-only mode which prevents any changes to the running server process.   
+
+.TP
+.B -m
+Returns output of the "show" command in CSV format. Useful for scripting control, or reporting, of the load balancer.
+
+.SH SEE ALSO
+.BR octopuslb-server "(1), "
+.br
+
+.SH AUTHOR
+
+Alistair Reay (alreay1@gmail.com) 

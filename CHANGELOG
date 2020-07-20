@@ -1,0 +1,140 @@
+ChangeLog :
+===========
+
+Summary:
+
+2011/11/29 : 1.14 - Maintenance. Config file parsing improvements.
+2011/09/16 : 1.13 - Maintenance. Admin outputs tidied up a bit. Systemd service script for Fedora. FSF address updated
+2011/05/13 : 1.12 - Bugix. Octopus.h 'includes' for non-snmp builds were incomplete 
+2011/03/02 : 1.11 - Lots of naming changes to avoid clashes with other projects called octopus out there. 
+2011/02/18 : 1.10 - Code simplification, octopus-client binary renamed to octopus-admin, man pages created, config file cleanup
+2010/10/04 : 1.09 - Bugfixes. RPM SPEC file included as well as initd script.
+2010/03/30 : 1.08 - Introduced standby server option. new balancing algorithm "static". logfile msg suppression.  
+2009/06/02 : 1.06 - Monitor process health check fix. Tweaks to client process.
+2009/04/15 : 1.05 - Various tweaks, bugfix
+2009/02/27 : 1.04 - New features, bugfixes, more control for admin.
+2008/11/22 : 1.03 - Various improvements
+2008/11/11 : 1.02 - Bugfixes.
+2008/11/03 : 1.01 - Bugfix: HASH algorithm of-by-one error when stripping URI query terms
+2008/10/29 : 1.0  - Production Release
+2008/08/25 : 1.0  - Release Candidate 1
+
+Detail:
+
+v1.4
+====
+
+-config file is now parsed trimming whitespace of both the directive and value - thanks to 'linuxtampa' @ SF, for this suggestion
+
+v1.3
+=====
+
+-on shutdown we now log to syslogd if configured to do so.
+-admin interface 'info' screen beautified, main 'show' command now has consistent use of caps.
+-admin/server usage output updated
+-systemd service script added.
+-this release will have Fedora15 + RHEL5 RPMs released too.
+
+v1.12
+=====
+
+-updated octopus.h to 'include' files previously removed as part of 1.09 - Thanks to 'Too' for bringing this up.
+
+v1.11
+=====
+
+-updated source to build dist as 'octopuslb-${version}.tar.gz'
+-changed binary names to "octopuslb-admin" and "octopuslb-server"
+-config file changed to 'octopuslb.conf'
+-removed octopus.conf.5 man page. The conf file itself will contain all documentation, not a separate man page
+-default run dir directory changed to /var/run/octopuslb
+-RPM build script updated to reflect all naming changes and feedback from Fedora community
+
+v1.10
+=====
+
+-shm_run_dir, /var/run/octopus, set to 0755 perms. 
+-default logfile dest now /var/log/octopus/octopus.log 
+-Added MAN pages
+-Renamed octopus-client binary to octopus-admin (renamed all source files to reflect this too)
+-GROUP struct now renamed to BALANCER
+-Added many more code comments
+-added debug_level parameter to config file
+-admin binary now exits with the correct return code when using non-interactive mode.
+-balance server section config file now more standaradised, wrt true/false values
+-added new session states to better indicate when server/client has dropped
+-tidied up code in octopus.c wrt separation of duties between maintain_session_sockets and various read/write functions 
+-removed concept of strict&fast clone modes, it's too confusing and in practise doesn't add much.
+-removed session stack and instead do epoll_ctl_mod operations withing client_read, member_read etc functions
+-debug_level can now be changed dynamically through the admin interface
+-default_maxc and default_maxl now parsed correctly from the config file
+-all references of 'maxload' changed to 'maxl' in both config file and source code
+
+v1.09
+=====
+
+-Updated client help messages to include 'static' method
+-Fixed typo 'supress' instead of 'suppress'.
+-Fixed bug where compilation with --disable-snmp would fail due to missing write_log() parameter
+-extras directory has now been created with a SPEC file and initd script
+
+v1.08
+=====
+
+-client binary can view a more cut-down display by using "extended output mode" toggle.
+-log messages that can repeat at a high frequency have been suppressed to lessen I/O and logfile size 
+-seg fault error fixed for "static" and "hash" algorithms. 
+-Massive tidy-up of client code (client.c).
+-Massive tidy-up of server selection code (algorithms.c).
+-Removed virtual function pointer that was used for choose_server.
+-Introduced a new alogrithm that is very similar to HASH but does not allocate based on metrics. for use in multi master setups. Called STATIC algorithm.
+-Algorithms section of the source has been vastly simplified
+-Introduced the "standby" flag for member and clone servers
+-Reseting counters using client shorthand method now outputs acknowledgement
+-Fixed exit code by removing redundant shmdt call which caused a segfault at the end of an exit
+-Configuration file now takes text values for server status lines. 
+-Fixed an off-by-one problem when creating shm files in /var/run/octopus.
+
+v1.06
+=====
+
+-Fixed monitoring process. Was misreporting a server as alive when response to alive-test was TCP RESET
+-Client can now do "enable all" and "disable all"
+-Client is now quits if server process has detached from SHM.  
+-Client is now forced to quit when trying to manipulate SHM that does not have a controlling server process.
+
+v1.05
+=====
+
+-Fixed serious bug that would cause octopus to quit abnormally if all member servers were disabled with HASH algorithm
+-Cluster overall load metric improved
+-Disabled servers continue to be monitored for SNMP load
+-Newly created servers are set with SNMP load of -1 (shows as ERR in load column) 
+
+V1.04
+=====
+
+-on client connection, a member server is now connected before data is read from the client and is also put into the read state. Fixes balancing MySQL and SSH etc 
+-separated connection code into a separate source file
+-when a client connects a server member session is created straigtaway. this fixes some problems with balancing apps that wait for server to send packet first.
+-added an overall cluster load metric 
+-server SHM placeholder file and SHM segment permissions can now be set in configuration file.
+-client can attach to server SHM in read-only mode. this is done automatically if attaching in r/w mode fails but can also be done explicitly.
+-added snmp_enable directive in configuration file and client application
+-clarified closing tags for servers in configuration file
+
+V1.03
+=====
+
+- algorithms.c: When using HASH algorithm, fall back to LC method if request does not look like a valid HTTP request
+- monitor.c: removed SO_LINGER socket option from health check code
+- client.c: allowed client to ignore client/server version check mismatch.
+- client.c: shows ERR in snmp load column if snmp request fails 
+
+V1.02
+=====
+
+- logging.c: Removed redundant fsync() from write_log
+- algorithms.c: Rearranged djb_hash order in set_hash_server
+- octopus.c: removed duplicate calls to choose_server
+- monitor.c: fixed problem where monitor would crash immediately if snmp_password was not set 

@@ -1,0 +1,63 @@
+.TH octopuslb-server "1" "29 Nov 2011" "version 1.14" "User Commands"
+
+.SH NAME
+
+octopuslb-server - main server process for the Octopus Load Balancer utility.
+
+.SH SYNOPSIS
+
+.B octopuslb-server
+-h
+.br
+.B octopuslb-server
+-c config_file [-f] [-d debug_level] 
+.br
+
+.SH DESCRIPTION
+
+.B octopuslb-server
+takes a mandatory config_file argument and begins an instance of the octopus load balancer utility. 
+.B octopuslb-server 
+can be started as a foreground process or with a different level of debugging by passing parameters on startup. 
+
+As many instances of the balancer may be created on the same host as long as the host OS allows a process to bind on the particular 
+IP and TCP port specified in the config file.
+
+Most features of 
+.B octopuslb-server
+can be dynamically controlled via
+.B octopuslb-admin
+such as; server addition/deletion/enabling/disabling/limiting and load balancing algorithm changes.  
+
+
+.SH OPTIONS
+
+.TP 5
+.B -h
+prints out the list of available commands
+
+.TP
+.B -c CONFIG_FILE
+this defines the octopus configuration file that will be used with this balancer. See the man page for
+.B octopuslb.conf
+for more information about the contents of the config file.
+
+.TP
+.B -f
+using this option forces 
+.B octopuslb-server
+to run in the foreground (no daemon mode).
+
+.TP
+.B -d DEBUG_LEVEL
+an integer that defines the logging verbosity. This will override the debug_level
+setting in the config file. Accepted range is 0-6
+
+.SH SEE ALSO
+.BR octopuslb-admin "(1), "
+.br
+
+
+.SH AUTHOR
+
+Alistair Reay (alreay1@gmail.com) 

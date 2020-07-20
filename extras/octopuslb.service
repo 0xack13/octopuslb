@@ -1,0 +1,10 @@
+[Unit]
+Description=Octopus Load Balancer
+After=syslog.target
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/octopuslb-server -c /etc/octopuslb/octopuslb.conf
+
+[Install]
+WantedBy=multi-user.target

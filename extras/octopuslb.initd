@@ -1,0 +1,70 @@
+#!/bin/bash
+#
+# octopus      Startup script for Octopus Load Balancer
+#
+# chkconfig: - 85 15
+# description: OctopusLB is a TCP/IP load balancer.
+# processname: octopuslb-server
+# config: /etc/octopuslb
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+prog="octopuslb-server"
+
+RETVAL=0
+
+start() {
+        # Start daemons.
+
+        if [ -d /etc/octopuslb ] ; then
+                for i in `ls /etc/octopuslb/*.conf`; do
+                        echo -n $"Starting OctopusLB using $i "
+                        daemon $prog -c $i
+                        RETVAL=$?
+                        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/octopuslb
+                        echo
+                done
+        else
+                RETVAL=1
+        fi
+        return $RETVAL
+}
+
+stop() {
+        # Stop daemons.
+        echo -n $"Shutting down $prog: "
+        killproc $prog
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/octopuslb
+		rm -f /var/run/octopuslb/*
+        return $RETVAL
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+start)
+	start
+        ;;
+
+stop)
+	stop
+        ;;
+
+restart|reload)
+	restart
+	;;
+status)
+        status $prog
+        RETVAL=$?
+        ;;
+
+*)
+        echo "Usage: $0 { start | stop | restart/reload | status}"
+        ;;
+esac
+exit $?

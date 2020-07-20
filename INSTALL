@@ -1,0 +1,41 @@
+Octopus Load Balancer v1.14 - http://octopuslb.sourceforge.net/
+
+Quick start guide
+=================
+
+To build Octopus you will need:
+- GNU make
+- GCC
+- Linux kernel version 2.6 (or 2.4 with epoll support)
+- (optional) net-snmp development libraries (on redhat this package is called net-snmp-devel)
+
+Quick start
+
+$ tar zxvf octopuslb-1.14.tar.gz
+$ cd octopuslb-1.14s
+$ ./configure (if you're compiling with SNMP support)
+OR
+$ ./configure --disable-snmp (if compiling without SNMP support)
+$ make 
+$ make install
+
+That's it! 
+
+Two binaries (octopuslb-server and octopuslb-admin) are installed in /usr/local/sbin and the default configuration file (octopuslb.conf) is installed to /usr/local/etc
+
+Edit and change any parameters in the configuration file such as IP and port values then start the server like this
+$ octopuslb-server -c /usr/local/etc/octopuslb.conf
+
+You can then connect using the client interace by using the client
+$ octopuslb-admin
+
+NB: The server process will try to create a directory to put an SHM placeholder file. By default this is /var/run/octopuslb. Make sure that the user that is trying to run octopuslb-server has these rights, alternatively (but not recommended), make this directory now and chmod to 1777.
+
+Extras
+======
+
+Take a look at the /extras directory for some init.d, systemd, logrotate and RPM .spec files if you want to build or package OctopusLB. 
+
+Enjoy!
+
+

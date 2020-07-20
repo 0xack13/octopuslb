@@ -1,0 +1,29 @@
+TODO
+
+- epoll_mod is performed every time a read/write function is called even if the overall session state hasn't changed, this could be made more efficient. 
+- clearly identify what each debug_level does
+- migrate from autotools to Cmake
+- get_new_sessions change to use a free-list instead of a full iterative scan
+- allow user to specify memory allocation method for session structs. At the moment it's 100% statically allocated but choice is good.
+- allow user to write current config to a new config file
+- handle HUP
+- set process names (master & monitor) using horrible arv[0] overwrite hack
+- dynamically resize maxmsg, maxsesisons, maxfds
+- logging system to use buffered i/o with log limits too
+- add some sort of weighting systems
+- Allow client to manipulate any server using name instead of 'm 0' or 'c 2'
+- when a server is set to FAILED then it should have its FRESH sessions reallocated and others d/c'd. Difficult as monitor process doesn't have access to sessions glob var.
+- line width of source is too large
+- configure script should be able to set MESSAGE_SIZE_LIMIT
+- some sort of 'power-up' mode where a newly added server can be treated as a clone until it builds a good cache
+
+TESTING
+- test the SHM dir and file creation on different systems as different users
+- put accepted values in conf file and check that config function honors those values
+
+ONGOING
+- document more code.
+- everything should be configurable through the client
+- error check every system call 
+- variable name standardisation
+- more conf file validation

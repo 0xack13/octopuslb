@@ -1,0 +1,6 @@
+/var/log/octopuslb/*log {
+    # octopus-server doesn't handle SIGHUP properly
+	rotate 7
+	copytruncate
+    missingok
+}
